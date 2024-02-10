@@ -1,9 +1,53 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/home.dart';
 
-class LogIn extends StatelessWidget {
+class LogIn extends StatefulWidget {
   const LogIn({super.key});
 
+  @override
+  State<LogIn> createState() => _LogInState();
+}
+
+class _LogInState extends State<LogIn> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  Future<void> _login() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      if (userCredential.user?.email == 'ajayraveendran369@gmail.com') {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }
+      // }
+    } on FirebaseAuthException catch (e) {
+      print("Error: ${e.message}");
+    }
+  }
+
+  // void loginUser() {
+  //   FirebaseAuthMethods(FirebaseAuth.instance).loginWithEmail(
+  //       email: emailController.text,
+  //       password: passwordController.text,
+  //       context: context);
+  // }
+
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
