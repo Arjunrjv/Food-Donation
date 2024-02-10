@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435837202458",
+    "project_id": "fooddon-c925f",
+    "storage_bucket": "fooddon-c925f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435837202458:android:573ca7471d6a6089fea1a3",
+        "android_client_info": {
+          "package_name": "com.example.fooddon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6Gzz6om77djFkwwj4vOmBsDy9OdMS-_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
