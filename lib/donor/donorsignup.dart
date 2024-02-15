@@ -1,8 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:fooddon/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooddon/donor/donorlogin.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class SignUp extends StatelessWidget {
-  const SignUp({super.key});
+class DonorSignup extends StatefulWidget {
+  const DonorSignup({Key? key}) : super(key: key);
+
+  @override
+  _DonorSignupState createState() => _DonorSignupState();
+}
+
+class _DonorSignupState extends State<DonorSignup> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _registerDonor(
+    String name,
+    String location,
+    String email,
+    String password,
+  ) async {
+    try {
+      // Register the user with Firebase Authentication
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Add donor information to Firestore "donors" collection
+      await FirebaseFirestore.instance
+          .collection('donors')
+          .doc(userCredential.user!.uid)
+          .set({
+        'name': name,
+        'location': location,
+        'email': email,
+        // Additional donor information...
+      });
+
+      // Navigate to the home screen after successful registration.
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DonorLogin(),
+        ),
+      );
+    } catch (e) {
+      print('Error registering donor: $e');
+      // Handle registration errors here.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +80,10 @@ class SignUp extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          const Text(
+                          Text(
                             'SIGN UP',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                            ),
+                            style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.white, fontSize: 30),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
@@ -43,13 +92,13 @@ class SignUp extends StatelessWidget {
                             child: SizedBox(
                               height: 56,
                               child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                                controller: _nameController,
+                                style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: 'name',
-                                  hintStyle: const TextStyle(
-                                      color: Color(0xffCDFF01),
+                                  hintText: 'Name',
+                                  hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: const Color(0xffCDFF01),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
                                   suffixIcon:
@@ -68,13 +117,13 @@ class SignUp extends StatelessWidget {
                             child: SizedBox(
                               height: 56,
                               child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                                controller: _locationController,
+                                style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: 'location',
-                                  hintStyle: const TextStyle(
-                                      color: Color(0xffCDFF01),
+                                  hintText: 'Location',
+                                  hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: const Color(0xffCDFF01),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
                                   suffixIcon: Image.asset('assets/locicon.png'),
@@ -90,13 +139,13 @@ class SignUp extends StatelessWidget {
                           SizedBox(
                             height: 56,
                             child: TextField(
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+                              controller: _emailController,
+                              style: GoogleFonts.barlowSemiCondensed(
+                                  color: Colors.white),
                               decoration: InputDecoration(
-                                hintText: 'email',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffCDFF01),
+                                hintText: 'Email',
+                                hintStyle: GoogleFonts.barlowSemiCondensed(
+                                    color: const Color(0xffCDFF01),
                                     fontSize: 18,
                                     fontWeight: FontWeight.w300),
                                 suffixIcon: Image.asset('assets/emailicon.png'),
@@ -113,14 +162,14 @@ class SignUp extends StatelessWidget {
                             child: SizedBox(
                               height: 56,
                               child: TextField(
+                                controller: _passwordController,
                                 obscureText: true,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                                style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: 'password',
-                                  hintStyle: const TextStyle(
-                                      color: Color(0xffCDFF01),
+                                  hintText: 'Password',
+                                  hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: const Color(0xffCDFF01),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
                                   suffixIcon:
@@ -136,11 +185,13 @@ class SignUp extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LogIn(),
-                                ),
+                              // Register the donor user
+                              _registerDonor(
+                                // Get values from text fields
+                                _nameController.text,
+                                _locationController.text,
+                                _emailController.text,
+                                _passwordController.text,
                               );
                             },
                             child: Container(

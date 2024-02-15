@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fooddon/login.dart';
-import 'package:fooddon/signup.dart';
+import 'package:fooddon/userselection.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -15,84 +15,77 @@ class Welcome extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 34, bottom: 60),
+              Padding(
+                padding: const EdgeInsets.only(top: 34, bottom: 60),
                 child: Text(
-                  'FOOD DONZ',
-                  style: TextStyle(color: Colors.white),
+                  'fooddon',
+                  style: GoogleFonts.barlowSemiCondensed(
+                      color: Colors.white, fontSize: 20),
                 ),
               ),
-              const Row(
+              Row(
                 children: [
                   Text(
                     'INCREASE',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: Colors.white,
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     ' FOOD',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffCDFF01),
-                    ),
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: const Color(0xffCDFF01),
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 'DONATION',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffCDFF01),
-                ),
+                style: GoogleFonts.barlowSemiCondensed(
+                    color: const Color(0xffCDFF01),
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold),
               ),
-              const Row(
+              Row(
                 children: [
                   Text(
                     'BY',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: Colors.white,
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     ' CONNECTING',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xffCDFF01),
-                    ),
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: const Color(0xffCDFF01),
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 'FOOD DONORS',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: GoogleFonts.barlowSemiCondensed(
+                    color: Colors.white,
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold),
               ),
-              const Text(
+              Text(
                 'AND',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xffCDFF01),
-                ),
+                style: GoogleFonts.barlowSemiCondensed(
+                    color: const Color(0xffCDFF01),
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold),
               ),
-              const Text(
+              Text(
                 'DISTRIBUTORS',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: GoogleFonts.barlowSemiCondensed(
+                    color: Colors.white,
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 121),
@@ -101,7 +94,7 @@ class Welcome extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SignUp(),
+                        builder: (context) => const UserSelectionPage(),
                       ),
                     );
                   },
@@ -115,32 +108,34 @@ class Welcome extends StatelessWidget {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  const Text(
-                    'Already have an account?',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LogIn(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Color(0xffCDFF01),
-                      ),
-                    ),
-                  ),
-                ],
-              )
+              // Row(
+              //   children: [
+              //     Text(
+              //       'Already have an account?',
+              //       style: GoogleFonts.barlowSemiCondensed(
+              //           color: Colors.white,
+              //           fontSize: 16,
+              //           fontWeight: FontWeight.w600),
+              //     ),
+              //     // TextButton(
+              //     //   onPressed: () {
+              //     //     Navigator.push(
+              //     //       context,
+              //     //       MaterialPageRoute(
+              //     //         builder: (context) => const UserSelectionPage(),
+              //     //       ),
+              //     //     );
+              //     //   },
+              //     //   child: Text(
+              //     //     'Login',
+              //     //     style: GoogleFonts.barlowSemiCondensed(
+              //     //         color: const Color(0xffCDFF01),
+              //     //         fontSize: 16,
+              //     //         fontWeight: FontWeight.w600),
+              //     //   ),
+              //     // ),
+              //   ],
+              // )
             ],
           ),
         ),

@@ -1,11 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fooddon/home.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+class DonorLogin extends StatelessWidget {
+  DonorLogin({Key? key}) : super(key: key);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _handleLogin(
+      String email, String password, BuildContext context) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
+    } catch (e) {
+      // Display error message using a SnackBar
+      String errorMessage = 'Error during donor login.';
+      if (e is FirebaseAuthException) {
+        errorMessage = e.message ?? 'An unknown error occurred.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+
+      print("Error during donor login: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -29,26 +65,24 @@ class LogIn extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 30),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 30),
                             child: Text(
-                              'LOG IN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
+                              'Donor Log In',
+                              style: GoogleFonts.barlowSemiCondensed(
+                                  color: Colors.white, fontSize: 30),
                             ),
                           ),
                           SizedBox(
                             height: 56,
                             child: TextField(
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+                              controller: emailController,
+                              style: GoogleFonts.barlowSemiCondensed(
+                                  color: Colors.white),
                               decoration: InputDecoration(
-                                hintText: 'email',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffCDFF01),
+                                hintText: 'Email',
+                                hintStyle: GoogleFonts.barlowSemiCondensed(
+                                    color: const Color(0xffCDFF01),
                                     fontSize: 18,
                                     fontWeight: FontWeight.w300),
                                 suffixIcon: Image.asset('assets/emailicon.png'),
@@ -65,14 +99,14 @@ class LogIn extends StatelessWidget {
                             child: SizedBox(
                               height: 56,
                               child: TextField(
+                                controller: passwordController,
                                 obscureText: true,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                                style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),
                                 decoration: InputDecoration(
-                                  hintText: 'password',
-                                  hintStyle: const TextStyle(
-                                      color: Color(0xffCDFF01),
+                                  hintText: 'Password',
+                                  hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: const Color(0xffCDFF01),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
                                   suffixIcon:
@@ -88,11 +122,10 @@ class LogIn extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
+                              _handleLogin(
+                                emailController.text,
+                                passwordController.text,
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(),
-                                ),
                               );
                             },
                             child: Container(

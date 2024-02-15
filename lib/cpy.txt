@@ -1,0 +1,9 @@
+style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.white, fontSize: 30),
+
+hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: Color(0xffCDFF01),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300),
+style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),                                      

@@ -37,7 +37,7 @@ class _MainHomeState extends State<MainHome> {
           ),
         ],
       ),
-      floatingActionButton: Container(
+      floatingActionButton: SizedBox(
         height: 70,
         width: 200,
         child: FloatingActionButton(
