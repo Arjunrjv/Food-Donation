@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fooddon/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fooddon/distributor/distributorhome.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DistributorLogin extends StatelessWidget {
@@ -20,7 +20,7 @@ class DistributorLogin extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const DistributorHome(),
         ),
       );
     } on FirebaseAuthException catch (e) {

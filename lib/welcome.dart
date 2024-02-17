@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fooddon/donorselection.dart';
 import 'package:fooddon/userselection.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -108,34 +109,34 @@ class Welcome extends StatelessWidget {
                   ),
                 ),
               ),
-              // Row(
-              //   children: [
-              //     Text(
-              //       'Already have an account?',
-              //       style: GoogleFonts.barlowSemiCondensed(
-              //           color: Colors.white,
-              //           fontSize: 16,
-              //           fontWeight: FontWeight.w600),
-              //     ),
-              //     // TextButton(
-              //     //   onPressed: () {
-              //     //     Navigator.push(
-              //     //       context,
-              //     //       MaterialPageRoute(
-              //     //         builder: (context) => const UserSelectionPage(),
-              //     //       ),
-              //     //     );
-              //     //   },
-              //     //   child: Text(
-              //     //     'Login',
-              //     //     style: GoogleFonts.barlowSemiCondensed(
-              //     //         color: const Color(0xffCDFF01),
-              //     //         fontSize: 16,
-              //     //         fontWeight: FontWeight.w600),
-              //     //   ),
-              //     // ),
-              //   ],
-              // )
+              Row(
+                children: [
+                  Text(
+                    'Already have an account?',
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DonorSelection(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Login',
+                      style: GoogleFonts.barlowSemiCondensed(
+                          color: const Color(0xffCDFF01),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

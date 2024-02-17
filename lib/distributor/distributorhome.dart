@@ -37,6 +37,7 @@ class _DistributorHomeState extends State<DistributorHome> {
             child: const Text(
               'Cancel',
               style: TextStyle(
+                color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -56,6 +57,7 @@ class _DistributorHomeState extends State<DistributorHome> {
             child: const Text(
               'Log out',
               style: TextStyle(
+                color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -107,69 +109,11 @@ class _DistributorHomeState extends State<DistributorHome> {
               Padding(
                 padding: const EdgeInsets.only(top: 30),
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddRequire(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 380,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'Users',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddRequire(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 360,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'Items',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: GestureDetector(
                   onTap: () => _signOut(context),
                   child: Container(
                     alignment: Alignment.center,
                     height: 100,
-                    width: 340,
+                    width: 400,
                     decoration: const BoxDecoration(
                       color: Color(0xffCDFF01),
                       borderRadius: BorderRadius.all(

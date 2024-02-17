@@ -68,19 +68,8 @@ class _DonateInState extends State<DonateIn> {
                     ),
                   ),
                 ),
-                const TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Phone no',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
+                  padding: EdgeInsets.only(bottom: 20),
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: 'Description',
