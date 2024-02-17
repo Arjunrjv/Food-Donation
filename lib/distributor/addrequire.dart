@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddRequire extends StatefulWidget {
   const AddRequire({super.key});
@@ -36,8 +37,23 @@ class _DistributorHomeState extends State<AddRequire> {
                   padding: const EdgeInsets.only(top: 50),
                   child: TextFormField(
                     controller: _controllerName,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: "Food Item Name",
+                      labelStyle: GoogleFonts.barlowSemiCondensed(
+                          color: Color(0xffCDFF01)),
+                      hintStyle: GoogleFonts.barlowSemiCondensed(
+                          color: Colors.white,
+                          fontWeight:
+                              FontWeight.w500), // Adjust opacity as needed
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            BorderSide(color: Colors.white.withOpacity(0.25)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Color(0xffCDFF01)),
+                      ),
                     ),
                   ),
                 ),
@@ -46,8 +62,23 @@ class _DistributorHomeState extends State<AddRequire> {
                 ),
                 TextFormField(
                   controller: _controllerQuantity,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Quantity",
+                    labelStyle: GoogleFonts.barlowSemiCondensed(
+                        color: Color(0xffCDFF01)),
+                    hintStyle: GoogleFonts.barlowSemiCondensed(
+                        color: Colors.white,
+                        fontWeight:
+                            FontWeight.w500), // Adjust opacity as needed
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.25)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Color(0xffCDFF01)),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -55,8 +86,23 @@ class _DistributorHomeState extends State<AddRequire> {
                 ),
                 TextFormField(
                   controller: _controllerExpiry,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Expiry time",
+                    labelStyle: GoogleFonts.barlowSemiCondensed(
+                        color: Color(0xffCDFF01)),
+                    hintStyle: GoogleFonts.barlowSemiCondensed(
+                        color: Colors.white,
+                        fontWeight:
+                            FontWeight.w500), // Adjust opacity as needed
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.25)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Color(0xffCDFF01)),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -64,48 +110,21 @@ class _DistributorHomeState extends State<AddRequire> {
                 ),
                 TextFormField(
                   controller: _controllerLocation,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Location",
+                    labelStyle: GoogleFonts.barlowSemiCondensed(
+                        color: Color(0xffCDFF01)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.25)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Color(0xffCDFF01)),
+                    ),
                   ),
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     Text(
-                //       'Pick the image',
-                //       style: TextStyle(
-                //         color: Colors.grey.withOpacity(0.5),
-                //       ),
-                //     ),
-                //     IconButton(
-                //       onPressed: () async {
-                //         ImagePicker imagePicker = ImagePicker();
-                //         XFile? file = await imagePicker.pickImage(
-                //             source: ImageSource.gallery);
-                //         print('${file?.path}');
-
-                //         if (file == null) return;
-
-                //         String uniqueFileName =
-                //             DateTime.now().millisecondsSinceEpoch.toString();
-
-                //         Reference referenceRoot =
-                //             FirebaseStorage.instance.ref();
-                //         Reference referenceDirImages =
-                //             referenceRoot.child('images');
-                //         Reference referenceImageToUpload =
-                //             referenceDirImages.child(uniqueFileName);
-
-                //         try {
-                //           await referenceImageToUpload.putFile(File(file.path));
-                //           imageUrl =
-                //               await referenceImageToUpload.getDownloadURL();
-                //         } catch (error) {}
-                //       },
-                //       icon: const Icon(Icons.image_search),
-                //     ),
-                //   ],
-                // ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -114,13 +133,6 @@ class _DistributorHomeState extends State<AddRequire> {
                   width: 380,
                   child: FloatingActionButton.extended(
                     onPressed: () async {
-                      // if (imageUrl.isEmpty) {
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //       const SnackBar(
-                      //           content: Text('Please upload an image')));
-
-                      //   return;
-                      // }
                       if (key.currentState!.validate()) {
                         String itemName = _controllerName.text;
                         String itemQuantity = _controllerQuantity.text;
@@ -132,7 +144,6 @@ class _DistributorHomeState extends State<AddRequire> {
                           'quantity': itemQuantity,
                           'expiry': itemExpiry,
                           'location': itemLocation,
-                          // 'image': imageUrl,
                           'timestamp': FieldValue.serverTimestamp(),
                         });
                       }
