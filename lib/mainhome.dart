@@ -111,7 +111,7 @@ class _MainHomeState extends State<MainHome> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => const Catalog(),
+                builder: (BuildContext context) => Catalog(),
               ),
             );
           },

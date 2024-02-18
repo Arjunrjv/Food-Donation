@@ -22,6 +22,21 @@ class _DistributorHomeState extends State<AddRequire> {
 
   String imageUrl = "";
 
+  Future<void> _selectTime(BuildContext context) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      initialEntryMode: TimePickerEntryMode.inputOnly,
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        // Format the picked time and set it to the text field
+        _controllerExpiry.text = pickedTime.format(context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +51,8 @@ class _DistributorHomeState extends State<AddRequire> {
                 Padding(
                   padding: const EdgeInsets.only(top: 50),
                   child: TextFormField(
+                    style: GoogleFonts.barlowSemiCondensed(
+                        color: Color(0xffCDFF01)),
                     controller: _controllerName,
                     decoration: InputDecoration(
                       labelText: "Food Item Name",
@@ -61,6 +78,8 @@ class _DistributorHomeState extends State<AddRequire> {
                   height: 10,
                 ),
                 TextFormField(
+                  style:
+                      GoogleFonts.barlowSemiCondensed(color: Color(0xffCDFF01)),
                   controller: _controllerQuantity,
                   decoration: InputDecoration(
                     labelText: "Quantity",
@@ -85,9 +104,13 @@ class _DistributorHomeState extends State<AddRequire> {
                   height: 10,
                 ),
                 TextFormField(
+                  style:
+                      GoogleFonts.barlowSemiCondensed(color: Color(0xffCDFF01)),
+                  keyboardType: TextInputType.datetime,
                   controller: _controllerExpiry,
                   decoration: InputDecoration(
                     labelText: "Expiry time",
+
                     labelStyle: GoogleFonts.barlowSemiCondensed(
                         color: Color(0xffCDFF01)),
                     hintStyle: GoogleFonts.barlowSemiCondensed(
@@ -103,12 +126,23 @@ class _DistributorHomeState extends State<AddRequire> {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Color(0xffCDFF01)),
                     ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.access_time,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        _selectTime(context);
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 TextFormField(
+                  style:
+                      GoogleFonts.barlowSemiCondensed(color: Color(0xffCDFF01)),
                   controller: _controllerLocation,
                   decoration: InputDecoration(
                     labelText: "Location",
