@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/donor/catalog.dart';
 import 'package:fooddon/welcome.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({super.key});
@@ -71,6 +72,14 @@ class _MainHomeState extends State<MainHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Hi Donor',
+          style: GoogleFonts.barlowSemiCondensed(
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: Column(
         children: [
           Stack(

@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/distributor/addrequire.dart';
+import 'package:fooddon/distributor/requirements.dart';
+import 'package:fooddon/distributor/userdonations.dart';
 import 'package:fooddon/welcome.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DistributorHome extends StatefulWidget {
   const DistributorHome({super.key});
@@ -72,6 +75,15 @@ class _DistributorHomeState extends State<DistributorHome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(
+            'Hi Distributor',
+            style: GoogleFonts.barlowSemiCondensed(
+              color: Colors.white,
+            ),
+          ),
+        ),
         backgroundColor: Colors.black,
         body: Padding(
           padding: const EdgeInsets.all(10),
@@ -100,6 +112,64 @@ class _DistributorHomeState extends State<DistributorHome> {
                     ),
                     child: const Text(
                       'Add Requirements',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RequireEdit(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 100,
+                    width: 400,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffCDFF01),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    child: const Text(
+                      'View and edit Requirements',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UserDonations(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 100,
+                    width: 400,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffCDFF01),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    child: const Text(
+                      'User Donations',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
