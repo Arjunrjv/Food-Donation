@@ -1,15 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/welcome.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class MyNotification extends StatefulWidget {
-  const MyNotification({super.key});
+class DonorLogout extends StatelessWidget {
+  const DonorLogout({super.key});
 
-  @override
-  State<MyNotification> createState() => _MyNotificationState();
-}
-
-class _MyNotificationState extends State<MyNotification> {
   void _signOut(BuildContext context) async {
     showDialog(
       context: context,
@@ -53,12 +49,12 @@ class _MyNotificationState extends State<MyNotification> {
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               'Log out',
-              style: TextStyle(
+              style: GoogleFonts.barlowSemiCondensed(
                 color: Colors.black,
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -70,6 +66,32 @@ class _MyNotificationState extends State<MyNotification> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Welcome(),
+              ),
+            );
+          },
+        ),
+        elevation: 0,
+        title: Text(
+          'Fooddon Donor',
+          style: GoogleFonts.barlowSemiCondensed(
+            color: const Color(0xffCDFF01),
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.black,
+      ),
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.only(top: 500, left: 30),
@@ -87,10 +109,13 @@ class _MyNotificationState extends State<MyNotification> {
                     Radius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Log Out',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+                  style: GoogleFonts.barlowSemiCondensed(
+                      color: Colors.black,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

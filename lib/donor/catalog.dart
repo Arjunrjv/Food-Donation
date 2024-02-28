@@ -412,9 +412,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fooddon/donor/donorcharity.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../home.dart';
+import 'package:intl/intl.dart';
+import 'home.dart';
 
 class Catalog extends StatefulWidget {
   const Catalog({Key? key}) : super(key: key);
@@ -681,7 +681,7 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
           ),
           elevation: 0,
           title: Text(
-            'Fooddon',
+            'Fooddon Donor',
             style: GoogleFonts.barlowSemiCondensed(
               color: const Color(0xffCDFF01),
               fontSize: 27,
@@ -779,89 +779,102 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
             itemCount: items.length,
             itemBuilder: (context, index) {
               Map<String, dynamic> thisItem = items[index];
-              // List<String> dates = List<String>.from(thisItem['dates'] ?? []);
-              List<String> dates = (thisItem['dates'] as String).split(',');
+              // List<Timestamp> dates =
+              //     List<Timestamp>.from(thisItem['dates'] ?? []);
+              List<Timestamp> dates = [];
+              if (thisItem['dates'] is List<Timestamp>) {
+                dates = List<Timestamp>.from(thisItem['dates']);
+              } else if (thisItem['dates'] is String) {
+                dates
+                    .add(Timestamp.fromDate(DateTime.parse(thisItem['dates'])));
+              }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: dates.map((date) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      children: [
-                        // Container with logo
-                        Container(
-                          width: 50,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            shape: BoxShape.rectangle,
-                            color: const Color(0xffCDFF01),
-                          ),
-                          child:
-                              const Icon(Icons.restaurant, color: Colors.black),
+              // Filter dates based on whether they are in the future or not
+              List<String> futureDates = dates
+                  .where((date) => date.toDate().isAfter(DateTime.now()))
+                  .map((date) => DateFormat('yyyy-MM-dd').format(date.toDate()))
+                  .toList();
+              if (futureDates.isNotEmpty) {
+                // Display the item only if it has dates in the future
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: [
+                      // Container with logo
+                      Container(
+                        width: 50,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          shape: BoxShape.rectangle,
+                          color: const Color(0xffCDFF01),
                         ),
-                        const SizedBox(width: 10),
-                        // List tile
-                        Container(
-                          height: 80,
-                          width: MediaQuery.of(context).size.width - 80,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.25),
-                              width: 1,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            color: Colors.black.withOpacity(0.07),
+                        child:
+                            const Icon(Icons.restaurant, color: Colors.black),
+                      ),
+                      const SizedBox(width: 10),
+                      // List tile
+                      Container(
+                        height: 80,
+                        width: MediaQuery.of(context).size.width - 80,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.25),
+                            width: 1,
                           ),
-                          child: ListTile(
-                            horizontalTitleGap: 25,
-                            titleTextStyle: GoogleFonts.barlowSemiCondensed(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          color: Colors.black.withOpacity(0.07),
+                        ),
+                        child: ListTile(
+                          horizontalTitleGap: 25,
+                          titleTextStyle: GoogleFonts.barlowSemiCondensed(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          leadingAndTrailingTextStyle:
+                              GoogleFonts.barlowSemiCondensed(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3),
+                          title: Text(
+                            'Name: ${thisItem['name']}\nNeeded quantity: ${thisItem['quantity']}',
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: Color(0xffCDFF01),
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 5),
+                                Text('${thisItem['location']}'),
+                              ],
                             ),
-                            leadingAndTrailingTextStyle:
-                                GoogleFonts.barlowSemiCondensed(
+                          ),
+                          subtitleTextStyle: GoogleFonts.barlowSemiCondensed(
                               color: Colors.white,
                               fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 3),
-                            title: Text(
-                              'Name: ${thisItem['name']}\nNeeded quantity: ${thisItem['quantity']}',
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    color: Color(0xffCDFF01),
-                                    size: 12,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text('${thisItem['location']}'),
-                                ],
-                              ),
-                            ),
-                            subtitleTextStyle: GoogleFonts.barlowSemiCondensed(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400),
-                            trailing: Text('Date: $date'),
-                            onTap: () {
-                              _showContributionBottomSheet(context, thisItem);
-                            },
-                          ),
+                              fontWeight: FontWeight.w400),
+                          trailing: Text('Date: ${futureDates.first}'),
+                          onTap: () {
+                            _showContributionBottomSheet(context, thisItem);
+                          },
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              );
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                // If there are no future dates, don't display the item
+                return Container();
+              }
             },
           );
         }
@@ -885,7 +898,7 @@ void _showNoDistributorsDialog(BuildContext context) {
           ),
         ),
         content: Text(
-          'Don\'t worry if your location doesn\'t have any distributors. You can contribute for charity.',
+          'No distributors are found on the selected location',
           style: GoogleFonts.barlowSemiCondensed(
             color: Colors.black,
             fontSize: 14,
@@ -908,16 +921,16 @@ void _showNoDistributorsDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
-              // Navigate to the charity contribution page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CharityContributionPage(),
-                ),
-              );
+              // // Navigate to the charity contribution page
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => CharityContributionPage(),
+              //   ),
+              // );
             },
             child: Text(
-              'Contribute for Charity',
+              'Ok',
               style: GoogleFonts.barlowSemiCondensed(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

@@ -73,37 +73,39 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         title: Text(
-          'Hi Donor',
+          'Fooddon Donor',
           style: GoogleFonts.barlowSemiCondensed(
-            color: Colors.black,
-          ),
+              color: Colors.black, fontWeight: FontWeight.w500),
         ),
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Image.asset(
-                'assets/homeimage.png',
-                width: 550,
-                height: 550,
-                fit: BoxFit.cover,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 450, left: 20),
-                child: Text(
-                  'Share The Love, Share A Meal - \nMaking Hunger A Thing Of The Past.',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.black.withOpacity(0.5),
-                    fontWeight: FontWeight.w500,
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Image.asset(
+                  'assets/homeimage.png',
+                  width: 600,
+                  height: 600,
+                  fit: BoxFit.cover,
                 ),
-              )
-            ],
-          ),
-        ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 450, left: 20),
+                  child: Text(
+                    'Share The Love, \nShare A Meal, \nMaking Hunger A Thing Of The Past.',
+                    style: GoogleFonts.barlowSemiCondensed(
+                      fontSize: 26,
+                      color: Colors.black.withOpacity(0.5),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
       floatingActionButton: SizedBox(
         height: 70,

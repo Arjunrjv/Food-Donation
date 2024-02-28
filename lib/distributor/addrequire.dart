@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fooddon/distributor/distributorhome.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -48,16 +49,43 @@ class _AddRequireState extends State<AddRequire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: Text(
+          'Fooddon Distributor',
+          style: GoogleFonts.barlowSemiCondensed(
+            color: const Color(0xffCDFF01),
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        // toolbarHeight: 20,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DistributorHome(),
+              ),
+            );
+          },
+        ),
+      ),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.only(left: 15, right: 15),
           child: Form(
             key: key,
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 50),
+                  padding: const EdgeInsets.only(top: 20),
                   child: TextFormField(
                     style: GoogleFonts.barlowSemiCondensed(
                         color: const Color(0xffCDFF01)),
@@ -191,12 +219,12 @@ class _AddRequireState extends State<AddRequire> {
                                 DateFormat('yyyy-MM-dd').format(dateToAdd);
 
                             // Add the document to the "dates" collection
-                            await dates.doc(formattedDate).set({
-                              'name': itemName,
-                              'quantity': itemQuantity,
-                              'location': itemLocation,
-                              'timestamp': FieldValue.serverTimestamp(),
-                            });
+                            // await dates.doc(formattedDate).set({
+                            //   'name': itemName,
+                            //   'quantity': itemQuantity,
+                            //   'location': itemLocation,
+                            //   'timestamp': FieldValue.serverTimestamp(),
+                            // });
                             await required.add({
                               'name': itemName,
                               'quantity': itemQuantity,

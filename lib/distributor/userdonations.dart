@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import 'distributorhome.dart';
+
 class UserDonations extends StatefulWidget {
   const UserDonations({Key? key}) : super(key: key);
 
@@ -16,17 +18,24 @@ class _UserDonationsState extends State<UserDonations> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   String users = 'users';
-  Future<List<DocumentSnapshot>> fetchDonations() async {
+  Future<List<QueryDocumentSnapshot>> fetchAllDonations() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('donations')
-          .doc(user?.uid ?? '')
-          .collection('userdonations')
-          .orderBy('timestamp', descending: true)
+          .collectionGroup('userdonations')
           .get();
-      return querySnapshot.docs;
+
+      List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+      print('Number of documents: ${documents.length}');
+
+      for (QueryDocumentSnapshot document in documents) {
+        print('Document ID: ${document.id}');
+        print('Document data: ${document.data()}');
+      }
+
+      return documents;
     } catch (e) {
-      print('Error fetching donations: $e');
+      print('Error fetching all donations: $e');
       return [];
     }
   }
@@ -34,18 +43,37 @@ class _UserDonationsState extends State<UserDonations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DistributorHome(),
+              ),
+            );
+          },
+        ),
+        elevation: 0,
         title: Text(
-          'Hi Donor',
+          'Fooddon Distributor',
           style: GoogleFonts.barlowSemiCondensed(
-            color: Colors.black,
+            color: const Color(0xffCDFF01),
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder<List<DocumentSnapshot>>(
-          future: fetchDonations(),
+          future: fetchAllDonations(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -56,6 +84,12 @@ class _UserDonationsState extends State<UserDonations> {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text('No donations available.'));
             }
+
+            snapshot.data!.forEach((doc) {
+              print('Number of documents: ${snapshot.data!.length}');
+              print('Document ID: ${doc.id}');
+              print('Document data: ${doc.data()}');
+            });
 
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -68,6 +102,7 @@ class _UserDonationsState extends State<UserDonations> {
                 final location = donations['location'] ?? 'N/A';
                 final donorName = donations['donorName'] ?? 'N/A';
                 final donorPhone = donations['donorNumber'] ?? 'N/A';
+                final date = donations['date'] ?? 'N/A';
 
                 // Convert timestamp to DateTime object
                 DateTime dateTime = (timestamp as Timestamp).toDate();
@@ -79,30 +114,21 @@ class _UserDonationsState extends State<UserDonations> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      color: Colors.black.withOpacity(0.07),
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.25),
+                        width: 1,
+                      ),
                     ),
-                    // child: ListTile(
-                    //   title: Center(
-                    //     child: Text(
-                    //       '$name',
-                    //       style: const TextStyle(fontSize: 20),
-                    //     ),
-                    //   ),
-                    //   subtitle:
-                    //       Center(child: Text('No of food packets: $quantity')),
-                    //   leading: Text(formattedDate), // Display formatted date
-                    //   trailing: Text(location),
-                    // ),
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            formattedDate,
+                            date,
                             style: GoogleFonts.barlowSemiCondensed(
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                           ),
                           Column(
@@ -111,19 +137,19 @@ class _UserDonationsState extends State<UserDonations> {
                               Text(
                                 donorName,
                                 style: GoogleFonts.barlowSemiCondensed(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                               Text(
                                 'Ph: $donorPhone',
                                 style: GoogleFonts.barlowSemiCondensed(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                               Text(
                                 '$name : $quantity',
                                 style: GoogleFonts.barlowSemiCondensed(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -131,7 +157,7 @@ class _UserDonationsState extends State<UserDonations> {
                           Text(
                             location,
                             style: GoogleFonts.barlowSemiCondensed(
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                           ),
                         ],

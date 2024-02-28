@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fooddon/distributor/addrequire.dart';
-import 'package:fooddon/donor/donorcharity.dart';
+import 'package:fooddon/distributor/distributorhome.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../home.dart';
+import '../donor/home.dart';
 
 class RequireEdit extends StatefulWidget {
   const RequireEdit({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _RequireEditState extends State<RequireEdit>
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
+                  builder: (context) => const DistributorHome(),
                 ),
               );
             },
@@ -156,6 +156,17 @@ class _RequireEditState extends State<RequireEdit>
               Map<String, dynamic> thisItem = items[index];
               // List<String> dates = List<String>.from(thisItem['dates'] ?? []);
               List<String> dates = (thisItem['dates'] as String).split(',');
+
+              // Filter only future-dated items
+              dates = dates.where((date) {
+                DateTime itemDate = DateTime.parse(date);
+                return itemDate.isAfter(DateTime.now());
+              }).toList();
+
+              if (dates.isEmpty) {
+                // If there are no future-dated items, return an empty container
+                return Container();
+              }
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,13 +297,13 @@ void _showNoDistributorsDialog(BuildContext context) {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
-              // Navigate to the charity contribution page
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CharityContributionPage(),
-                ),
-              );
+              // // Navigate to the charity contribution page
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => CharityContributionPage(),
+              //   ),
+              // );
             },
             child: Text(
               'Contribute for Charity',

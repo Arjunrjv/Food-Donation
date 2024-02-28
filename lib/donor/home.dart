@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fooddon/donation.dart';
-import 'package:fooddon/mainhome.dart';
-import 'package:fooddon/notification.dart';
+import 'package:fooddon/donor/donation.dart';
+import 'package:fooddon/donor/mainhome.dart';
+import 'package:fooddon/donor/donorlogout.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const MainHome(),
     const MyDonation(),
-    const MyNotification(),
+    const DonorLogout(),
   ];
 
   @override
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.volunteer_activism), label: 'My Donation'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'Notification'),
+              icon: Icon(Icons.logout_rounded), label: 'Logout'),
         ],
         selectedItemColor: const Color(0xffCDFF01),
         unselectedItemColor: Colors.white,

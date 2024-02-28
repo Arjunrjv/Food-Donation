@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fooddon/home.dart';
+import 'package:fooddon/donor/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DonorLogin extends StatelessWidget {

@@ -18,17 +18,17 @@ class _DistributorHomeState extends State<DistributorHome> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
+        title: Text(
           'Log out',
-          style: TextStyle(
+          style: GoogleFonts.barlowSemiCondensed(
             color: Colors.black,
             fontSize: 32,
             fontWeight: FontWeight.w800,
           ),
         ),
-        content: const Text(
+        content: Text(
           'Are you sure you want to log out?',
-          style: TextStyle(
+          style: GoogleFonts.barlowSemiCondensed(
             color: Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
@@ -37,9 +37,9 @@ class _DistributorHomeState extends State<DistributorHome> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(
+              style: GoogleFonts.barlowSemiCondensed(
                 color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -57,9 +57,9 @@ class _DistributorHomeState extends State<DistributorHome> {
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               'Log out',
-              style: TextStyle(
+              style: GoogleFonts.barlowSemiCondensed(
                 color: Colors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -77,128 +77,212 @@ class _DistributorHomeState extends State<DistributorHome> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
+          elevation: 0,
           title: Text(
-            'Hi Distributor',
+            'Fooddon Distributor',
             style: GoogleFonts.barlowSemiCondensed(
-              color: Colors.white,
+              color: const Color(0xffCDFF01),
+              fontSize: 27,
+              fontWeight: FontWeight.bold,
             ),
           ),
+          automaticallyImplyLeading: false,
         ),
         backgroundColor: Colors.black,
         body: Padding(
           padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddRequire(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'Add Requirements',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RequireEdit(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'View and edit Requirements',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddRequire(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            shape: BoxShape.rectangle,
+                            color: const Color(0xffCDFF01),
+                          ),
+                          child: const Icon(Icons.post_add_rounded,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          width: 250,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffCDFF01),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'Add Requirements',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserDonations(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'User Donations',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: GestureDetector(
-                  onTap: () => _signOut(context),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 100,
-                    width: 400,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffCDFF01),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'LogOut',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RequireEdit(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            shape: BoxShape.rectangle,
+                            color: const Color(0xffCDFF01),
+                          ),
+                          child: const Icon(Icons.preview_rounded,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          width: 250,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffCDFF01),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'View and edit Requirements',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserDonations(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            shape: BoxShape.rectangle,
+                            color: const Color(0xffCDFF01),
+                          ),
+                          child: const Icon(Icons.food_bank_rounded,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          width: 250,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffCDFF01),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'User Donations',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: GestureDetector(
+                    onTap: () => _signOut(context),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            shape: BoxShape.rectangle,
+                            color: const Color(0xffCDFF01),
+                          ),
+                          child: const Icon(Icons.logout_rounded,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 80,
+                          width: 250,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffCDFF01),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'LogOut',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.barlowSemiCondensed(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

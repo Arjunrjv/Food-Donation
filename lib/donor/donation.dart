@@ -203,6 +203,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/donor/contribute.dart';
+import 'package:fooddon/donor/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -237,13 +238,32 @@ class _MyDonationState extends State<MyDonation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+          },
+        ),
+        elevation: 0,
         title: Text(
-          'Hi Donor',
+          'Fooddon Donor',
           style: GoogleFonts.barlowSemiCondensed(
-            color: Colors.black,
+            color: const Color(0xffCDFF01),
+            fontSize: 27,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor: Colors.black,
       ),
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder<List<DocumentSnapshot>>(
@@ -268,12 +288,13 @@ class _MyDonationState extends State<MyDonation> {
                 final quantity = donations['contributedQuantity'] ?? 'N/A';
                 final timestamp = donations['timestamp'];
                 final location = donations['location'] ?? 'N/A';
+                final date = donations['date'] ?? 'N/A';
 
                 // Convert timestamp to DateTime object
                 DateTime dateTime = (timestamp as Timestamp).toDate();
                 // Format DateTime object to display only the date
-                String formattedDate =
-                    DateFormat('yyyy-MM-dd').format(dateTime);
+                // String formattedDate =
+                //     DateFormat('yyyy-MM-dd').format(dateTime);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -300,12 +321,30 @@ class _MyDonationState extends State<MyDonation> {
                                       .then((_) {
                                     FirebaseFirestore.instance
                                         .collection('required')
-                                        .doc(snapshot.data![index]['itemId'])
-                                        .update({
-                                      'quantity':
-                                          FieldValue.increment(quantity as int),
+                                        .where('name',
+                                            isEqualTo: snapshot.data![index]
+                                                ['name'])
+                                        .where('location',
+                                            isEqualTo: snapshot.data![index]
+                                                ['location'])
+                                        .where('dates',
+                                            isEqualTo: snapshot.data![index]
+                                                ['date'])
+                                        .get()
+                                        .then((querySnapshot) {
+                                      if (querySnapshot.docs.isNotEmpty) {
+                                        // Update the quantity for the matching document
+                                        FirebaseFirestore.instance
+                                            .collection('required')
+                                            .doc(querySnapshot.docs.first.id)
+                                            .update({
+                                          'quantity': FieldValue.increment(
+                                              quantity as int),
+                                        });
+                                      }
                                     });
                                   });
+
                                   Navigator.of(context)
                                       .pop(); // Close the dialog
                                 },
@@ -352,8 +391,12 @@ class _MyDonationState extends State<MyDonation> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
+                            const BorderRadius.all(Radius.circular(10)),
                         color: Colors.black.withOpacity(0.07),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.25),
+                          width: 1,
+                        ),
                       ),
                       child: ListTile(
                         title: Center(
@@ -364,8 +407,23 @@ class _MyDonationState extends State<MyDonation> {
                         ),
                         subtitle: Center(
                             child: Text('No. of food packets: $quantity')),
-                        leading: Text(formattedDate), // Display formatted date
+                        leading: Text(date), // Display formatted date
                         trailing: Text(location),
+                        leadingAndTrailingTextStyle:
+                            GoogleFonts.barlowSemiCondensed(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        subtitleTextStyle: GoogleFonts.barlowSemiCondensed(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400),
+                        titleTextStyle: GoogleFonts.barlowSemiCondensed(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
