@@ -92,7 +92,7 @@ class _DistributorHomeState extends State<DistributorHome> {
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [

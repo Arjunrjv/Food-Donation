@@ -1,204 +1,3 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-
-// class MyDonation extends StatefulWidget {
-//   const MyDonation({super.key});
-
-//   @override
-//   State<MyDonation> createState() => _MyDonationState();
-// }
-
-// class _MyDonationState extends State<MyDonation> {
-//   User? user = FirebaseAuth.instance.currentUser;
-//   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-//   String users = 'users';
-//   Future<List<DocumentSnapshot>> fetchDonations() async {
-//     try {
-//       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-//           .collection('donations')
-//           .doc(user?.uid ?? '')
-//           .collection('userdonations')
-//           .orderBy('timestamp', descending: true)
-//           .get();
-//       return querySnapshot.docs;
-//     } catch (e) {
-//       print('Error fetching planted trees: $e');
-//       return [];
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           'Hi Donor',
-//           style: GoogleFonts.barlowSemiCondensed(
-//             color: Colors.black,
-//           ),
-//         ),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(10),
-//         child: FutureBuilder<List<DocumentSnapshot>>(
-//           future: fetchDonations(),
-//           builder: (context, snapshot) {
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (snapshot.hasError) {
-//               return Center(child: Text('Error: ${snapshot.error}'));
-//             }
-//             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//               return const Center(child: Text('No donations available.'));
-//             }
-
-//             return ListView.builder(
-//               itemCount: snapshot.data!.length,
-//               itemBuilder: (context, index) {
-//                 final donations =
-//                     snapshot.data![index].data() as Map<String, dynamic>;
-//                 final name = donations['name'] ?? 'N/A';
-//                 final quantity = donations['contributedQuantity'] ?? 'N/A';
-//                 final date = donations['date'] ?? 'N/A';
-//                 final location = donations['location'] ?? 'N/A';
-
-//                 return Padding(
-//                   padding: const EdgeInsets.only(bottom: 10),
-//                   child: Container(
-//                     decoration: BoxDecoration(
-//                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-//                       color: Colors.black.withOpacity(0.07),
-//                     ),
-//                     child: ListTile(
-//                       title: Center(
-//                           child: Text(
-//                         '$name',
-//                         style: const TextStyle(fontSize: 20),
-//                       )),
-//                       subtitle: Center(child: Text('$quantity')),
-//                       leading: Text(date),
-//                       trailing: Text(location),
-//                     ),
-//                   ),
-//                 );
-//               },
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:intl/intl.dart';
-
-// class MyDonation extends StatefulWidget {
-//   const MyDonation({Key? key}) : super(key: key);
-
-//   @override
-//   State<MyDonation> createState() => _MyDonationState();
-// }
-
-// class _MyDonationState extends State<MyDonation> {
-//   User? user = FirebaseAuth.instance.currentUser;
-//   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-//   String users = 'users';
-//   Future<List<DocumentSnapshot>> fetchDonations() async {
-//     try {
-//       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-//           .collection('donations')
-//           .doc(user?.uid ?? '')
-//           .collection('userdonations')
-//           .orderBy('timestamp', descending: true)
-//           .get();
-//       return querySnapshot.docs;
-//     } catch (e) {
-//       print('Error fetching donations: $e');
-//       return [];
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           'Hi Donor',
-//           style: GoogleFonts.barlowSemiCondensed(
-//             color: Colors.black,
-//           ),
-//         ),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(10),
-//         child: FutureBuilder<List<DocumentSnapshot>>(
-//           future: fetchDonations(),
-//           builder: (context, snapshot) {
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
-//             if (snapshot.hasError) {
-//               return Center(child: Text('Error: ${snapshot.error}'));
-//             }
-//             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//               return const Center(child: Text('No donations available.'));
-//             }
-
-//             return ListView.builder(
-//               itemCount: snapshot.data!.length,
-//               itemBuilder: (context, index) {
-//                 final donations =
-//                     snapshot.data![index].data() as Map<String, dynamic>;
-//                 final name = donations['name'] ?? 'N/A';
-//                 final quantity = donations['contributedQuantity'] ?? 'N/A';
-//                 final timestamp = donations['timestamp'];
-//                 final location = donations['location'] ?? 'N/A';
-
-//                 // Convert timestamp to DateTime object
-//                 DateTime dateTime = (timestamp as Timestamp).toDate();
-//                 // Format DateTime object to display only the date
-//                 String formattedDate =
-//                     DateFormat('yyyy-MM-dd').format(dateTime);
-
-//                 return Padding(
-//                   padding: const EdgeInsets.only(bottom: 10),
-//                   child: Container(
-//                     decoration: BoxDecoration(
-//                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-//                       color: Colors.black.withOpacity(0.07),
-//                     ),
-//                     child: ListTile(
-//                       title: Center(
-//                         child: Text(
-//                           '$name',
-//                           style: const TextStyle(fontSize: 20),
-//                         ),
-//                       ),
-//                       subtitle:
-//                           Center(child: Text('No. of food packets: $quantity')),
-//                       leading: Text(formattedDate), // Display formatted date
-//                       trailing: Text(location),
-//                     ),
-//                   ),
-//                 );
-//               },
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -219,6 +18,7 @@ class _MyDonationState extends State<MyDonation> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   String users = 'users';
+
   Future<List<DocumentSnapshot>> fetchDonations() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -293,8 +93,8 @@ class _MyDonationState extends State<MyDonation> {
                 // Convert timestamp to DateTime object
                 DateTime dateTime = (timestamp as Timestamp).toDate();
                 // Format DateTime object to display only the date
-                // String formattedDate =
-                //     DateFormat('yyyy-MM-dd').format(dateTime);
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd').format(dateTime);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -383,6 +183,24 @@ class _MyDonationState extends State<MyDonation> {
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
+                              TextButton(
+                                onPressed: () {
+                                  // "Select Another Date" option
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                  // Navigate to date selection page here
+                                  // Replace the next line with your navigation logic
+                                  _selectAnotherDate(
+                                      snapshot.data![index].id,
+                                      snapshot.data![index]['name'],
+                                      snapshot.data![index]['date'],
+                                      quantity);
+                                },
+                                child: const Text(
+                                  'Select Another Date',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
                             ],
                           );
                         },
@@ -434,5 +252,124 @@ class _MyDonationState extends State<MyDonation> {
         ),
       ),
     );
+  }
+
+  void _selectAnotherDate(String donationId, String itemName,
+      String currentSelectedDate, int currentQuantity) {
+    // Fetch all documents from Firestore based on the itemName
+    FirebaseFirestore.instance
+        .collection('required')
+        .where('name', isEqualTo: itemName)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        // Extract all dates from all documents
+        List<String> allDates = [];
+
+        querySnapshot.docs.forEach((doc) {
+          var dates = doc['dates'];
+          if (dates != null) {
+            if (dates is String) {
+              // If it's a single string, extract the date
+              allDates.add(dates);
+            } else if (dates is List) {
+              // If it's a list, add each element to allDates
+              allDates.addAll(dates.cast<String>());
+            } else {
+              // Handle unsupported types or missing data
+              print("Unsupported data type for 'dates' field.");
+            }
+          }
+        });
+
+        // Show dialog with all available dates
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Select Another Date'),
+              content: Column(
+                children: allDates.map((date) {
+                  return ListTile(
+                    title: Text(date),
+                    onTap: () {
+                      print("Updating date to: $date");
+
+                      // After the donation update is complete, retrieve the previous document
+                      FirebaseFirestore.instance
+                          .collection('required')
+                          .where('name', isEqualTo: itemName)
+                          .where('dates', isEqualTo: currentSelectedDate)
+                          .get()
+                          .then((querySnapshot) {
+                        if (querySnapshot.docs.isNotEmpty) {
+                          // Restore quantity for the old date
+                          FirebaseFirestore.instance
+                              .collection('required')
+                              .doc(querySnapshot.docs.first.id)
+                              .update({
+                            'quantity': FieldValue.increment(currentQuantity),
+                          }).then((_) {
+                            print(
+                                "Restoring quantity for $currentSelectedDate");
+                          }).catchError((error) {
+                            print("Error restoring quantity: $error");
+                          });
+                        } else {
+                          print(
+                              "Document not found for date: $currentSelectedDate");
+                        }
+                      }).catchError((error) {
+                        print(
+                            "Error retrieving document for date: $currentSelectedDate");
+                      });
+
+                      // Update the date for the donation
+                      FirebaseFirestore.instance
+                          .collection('donations')
+                          .doc(user!.uid)
+                          .collection('userdonations')
+                          .doc(donationId)
+                          .update({'date': date}).then((_) {
+                        // Update quantity for the new date
+                        FirebaseFirestore.instance
+                            .collection('required')
+                            .where('name', isEqualTo: itemName)
+                            .where('dates', arrayContains: date)
+                            .get()
+                            .then((newDateQuerySnapshot) {
+                          if (newDateQuerySnapshot.docs.isNotEmpty) {
+                            FirebaseFirestore.instance
+                                .collection('required')
+                                .doc(newDateQuerySnapshot.docs.first.id)
+                                .update({
+                              'quantity':
+                                  FieldValue.increment(-currentQuantity),
+                            }).then((_) {
+                              print("Updating quantity for $date");
+                            }).catchError((error) {
+                              print(
+                                  "Error updating quantity for $date: $error");
+                            });
+                          } else {
+                            print("Document not found for date: $date");
+                          }
+                        }).catchError((error) {
+                          print("Error retrieving document for date: $date");
+                        });
+
+                        Navigator.of(context).pop(); // Close the dialog
+                      }).catchError((error) {
+                        print("Error updating date: $error");
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        );
+      }
+    });
   }
 }

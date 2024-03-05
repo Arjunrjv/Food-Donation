@@ -82,6 +82,7 @@ class DistributorLogin extends StatelessWidget {
                           SizedBox(
                             height: 56,
                             child: TextField(
+                              keyboardType: TextInputType.emailAddress,
                               controller: emailController,
                               style: GoogleFonts.barlowSemiCondensed(
                                 color: Colors.white,

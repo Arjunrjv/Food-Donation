@@ -139,6 +139,7 @@ class _DonorSignupState extends State<DonorSignup> {
                           SizedBox(
                             height: 56,
                             child: TextField(
+                              keyboardType: TextInputType.emailAddress,
                               controller: _emailController,
                               style: GoogleFonts.barlowSemiCondensed(
                                   color: Colors.white),
