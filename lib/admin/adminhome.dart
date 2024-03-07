@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fooddon/admin/alldonations.dart';
 import 'package:fooddon/admin/showalldistributor.dart';
 import 'package:fooddon/admin/showalldonors.dart';
 import 'package:fooddon/welcome.dart';
@@ -140,6 +141,38 @@ class _AdminHomeState extends State<AdminHome> {
                 ),
                 child: Text(
                   'Donors',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.barlowSemiCondensed(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AllDonations(),
+                  ),
+                );
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: 80,
+                width: 250,
+                decoration: const BoxDecoration(
+                  color: Color(0xffCDFF01),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'All Donations',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.barlowSemiCondensed(
                       color: Colors.black,

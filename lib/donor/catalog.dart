@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -93,6 +94,12 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                       Padding(
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                         child: TextField(
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(
+                                10), // Limit to 10 characters
+                            FilteringTextInputFormatter
+                                .digitsOnly, // Allow only digits
+                          ],
                           style: GoogleFonts.barlowSemiCondensed(
                             color: Colors.white,
                           ),
@@ -169,6 +176,34 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                               },
                             );
                             return; // Don't proceed if any field is empty
+                          }
+
+                          // Check if the phone number has exactly 10 digits
+                          if (_donorNumberController.text.length != 10 ||
+                              !RegExp(r'^[0-9]+$')
+                                  .hasMatch(_donorNumberController.text)) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Warning'),
+                                  content: const Text(
+                                      'Please enter a valid 10-digit phone number'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'OK',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            return; // Don't proceed if phone number is not valid
                           }
 
                           // Perform contribution logic here
