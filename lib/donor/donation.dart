@@ -5,6 +5,7 @@ import 'package:fooddon/donor/contribute.dart';
 import 'package:fooddon/donor/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 class MyDonation extends StatefulWidget {
   const MyDonation({Key? key}) : super(key: key);
@@ -18,6 +19,31 @@ class _MyDonationState extends State<MyDonation> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   String users = 'users';
+  String? userName;
+
+  var logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('donors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      logger.e('Error fetching user name: $e');
+    }
+  }
 
   Future<List<DocumentSnapshot>> fetchDonations() async {
     try {
@@ -29,7 +55,7 @@ class _MyDonationState extends State<MyDonation> {
           .get();
       return querySnapshot.docs;
     } catch (e) {
-      print('Error fetching donations: $e');
+      logger.e('Error fetching donations: $e');
       return [];
     }
   }
@@ -54,7 +80,7 @@ class _MyDonationState extends State<MyDonation> {
         ),
         elevation: 0,
         title: Text(
-          'Fooddon Donor',
+          'Hi ${userName ?? ''} (Donor)',
           style: GoogleFonts.barlowSemiCondensed(
             color: const Color(0xffCDFF01),
             fontSize: 27,
@@ -174,7 +200,7 @@ class _MyDonationState extends State<MyDonation> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const Contribute(),
+                                      builder: (context) => ContributePage(),
                                     ),
                                   );
                                 },
@@ -280,6 +306,7 @@ class _MyDonationState extends State<MyDonation> {
               print("Unsupported data type for 'dates' field.");
             }
           }
+          allDates.sort();
         });
 
         // Show dialog with all available dates
@@ -295,35 +322,6 @@ class _MyDonationState extends State<MyDonation> {
                     onTap: () {
                       print("Updating date to: $date");
 
-                      // After the donation update is complete, retrieve the previous document
-                      FirebaseFirestore.instance
-                          .collection('required')
-                          .where('name', isEqualTo: itemName)
-                          .where('dates', isEqualTo: currentSelectedDate)
-                          .get()
-                          .then((querySnapshot) {
-                        if (querySnapshot.docs.isNotEmpty) {
-                          // Restore quantity for the old date
-                          FirebaseFirestore.instance
-                              .collection('required')
-                              .doc(querySnapshot.docs.first.id)
-                              .update({
-                            'quantity': FieldValue.increment(currentQuantity),
-                          }).then((_) {
-                            print(
-                                "Restoring quantity for $currentSelectedDate");
-                          }).catchError((error) {
-                            print("Error restoring quantity: $error");
-                          });
-                        } else {
-                          print(
-                              "Document not found for date: $currentSelectedDate");
-                        }
-                      }).catchError((error) {
-                        print(
-                            "Error retrieving document for date: $currentSelectedDate");
-                      });
-
                       // Update the date for the donation
                       FirebaseFirestore.instance
                           .collection('donations')
@@ -331,31 +329,37 @@ class _MyDonationState extends State<MyDonation> {
                           .collection('userdonations')
                           .doc(donationId)
                           .update({'date': date}).then((_) {
-                        // Update quantity for the new date
+                        // Fetch all documents related to the item
                         FirebaseFirestore.instance
                             .collection('required')
                             .where('name', isEqualTo: itemName)
-                            .where('dates', arrayContains: date)
                             .get()
-                            .then((newDateQuerySnapshot) {
-                          if (newDateQuerySnapshot.docs.isNotEmpty) {
-                            FirebaseFirestore.instance
-                                .collection('required')
-                                .doc(newDateQuerySnapshot.docs.first.id)
-                                .update({
-                              'quantity':
-                                  FieldValue.increment(-currentQuantity),
-                            }).then((_) {
-                              print("Updating quantity for $date");
-                            }).catchError((error) {
-                              print(
-                                  "Error updating quantity for $date: $error");
-                            });
-                          } else {
-                            print("Document not found for date: $date");
-                          }
+                            .then((querySnapshot) {
+                          querySnapshot.docs.forEach((doc) {
+                            // Update quantity for the new date and old date
+                            if (doc['dates'].contains(currentSelectedDate)) {
+                              // Increment quantity for the old date
+                              FirebaseFirestore.instance
+                                  .collection('required')
+                                  .doc(doc.id)
+                                  .update({
+                                'quantity':
+                                    FieldValue.increment(currentQuantity),
+                              });
+                            } else if (doc['dates'].contains(date)) {
+                              // Decrement quantity for the new date
+                              FirebaseFirestore.instance
+                                  .collection('required')
+                                  .doc(doc.id)
+                                  .update({
+                                'quantity':
+                                    FieldValue.increment(-currentQuantity),
+                              });
+                            }
+                          });
                         }).catchError((error) {
-                          print("Error retrieving document for date: $date");
+                          print(
+                              "Error fetching documents related to the item: $error");
                         });
 
                         Navigator.of(context).pop(); // Close the dialog

@@ -1,17 +1,43 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fooddon/donor/catalog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fooddon/donor/showdistributor.dart';
 import 'package:fooddon/welcome.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainHome extends StatefulWidget {
-  const MainHome({super.key});
+  const MainHome({Key? key}) : super(key: key);
 
   @override
   State<MainHome> createState() => _MainHomeState();
 }
 
 class _MainHomeState extends State<MainHome> {
+  User? user = FirebaseAuth.instance.currentUser;
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('donors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      print('Error fetching user name: $e');
+    }
+  }
+
   void _signOut(BuildContext context) async {
     showDialog(
       context: context,
@@ -75,9 +101,11 @@ class _MainHomeState extends State<MainHome> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Fooddon Donor',
+          'Hi ${userName ?? ''} (Donor)',
           style: GoogleFonts.barlowSemiCondensed(
-              color: Colors.black, fontWeight: FontWeight.w500),
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -122,7 +150,7 @@ class _MainHomeState extends State<MainHome> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => Catalog(),
+                builder: (BuildContext context) => ShowDistributor(),
               ),
             );
           },

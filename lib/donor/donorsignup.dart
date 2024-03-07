@@ -22,8 +22,57 @@ class _DonorSignupState extends State<DonorSignup> {
     String location,
     String email,
     String password,
+    BuildContext context,
   ) async {
     try {
+      // Check if any of the fields are empty
+      if (name.isEmpty ||
+          location.isEmpty ||
+          email.isEmpty ||
+          password.isEmpty) {
+        // Display a snackbar with an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fill in all fields.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Check if the email is valid
+      if (!RegExp(
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(email)) {
+        // Display a snackbar with an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter a valid email address.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Check if the email is unique (not already registered)
+      QuerySnapshot<Map<String, dynamic>> existingUsers =
+          await FirebaseFirestore.instance
+              .collection('donors')
+              .where('email', isEqualTo: email)
+              .get();
+
+      if (existingUsers.docs.isNotEmpty) {
+        // Display a snackbar with an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Email is already in use. Please use a different email address.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       // Register the user with Firebase Authentication
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -42,7 +91,7 @@ class _DonorSignupState extends State<DonorSignup> {
         // Additional donor information...
       });
 
-      // Navigate to the home screen after successful registration.
+      // Navigate to the donor login screen after successful registration.
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -50,7 +99,13 @@ class _DonorSignupState extends State<DonorSignup> {
         ),
       );
     } catch (e) {
-      print('Error registering donor: $e');
+      // Display a snackbar with an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error registering donor: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
       // Handle registration errors here.
     }
   }
@@ -193,6 +248,7 @@ class _DonorSignupState extends State<DonorSignup> {
                                 _locationController.text,
                                 _emailController.text,
                                 _passwordController.text,
+                                context,
                               );
                             },
                             child: Container(

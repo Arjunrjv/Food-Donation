@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fooddon/distributor/addrequire.dart';
 import 'package:fooddon/distributor/distributorhome.dart';
+import 'package:fooddon/distributor/editrequiremts.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../donor/home.dart';
 
 class RequireEdit extends StatefulWidget {
   const RequireEdit({Key? key}) : super(key: key);
@@ -21,12 +21,31 @@ class _RequireEditState extends State<RequireEdit>
   final TextEditingController _searchController = TextEditingController();
 
   String _searchLocation = "";
+  User? user = FirebaseAuth.instance.currentUser;
+  String? userName;
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('distributors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      print('Error fetching user name: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
+    fetchUserName();
   }
 
   void _handleTabSelection() {
@@ -56,7 +75,7 @@ class _RequireEditState extends State<RequireEdit>
           ),
           elevation: 0,
           title: Text(
-            'Fooddon',
+            'Hi ${userName ?? ''} (Distributor)',
             style: GoogleFonts.barlowSemiCondensed(
               color: const Color(0xffCDFF01),
               fontSize: 27,
@@ -154,6 +173,7 @@ class _RequireEditState extends State<RequireEdit>
             itemCount: items.length,
             itemBuilder: (context, index) {
               Map<String, dynamic> thisItem = items[index];
+              String documentId = thisItem['id'];
               // List<String> dates = List<String>.from(thisItem['dates'] ?? []);
               List<String> dates = (thisItem['dates'] as String).split(',');
 
@@ -242,7 +262,8 @@ class _RequireEditState extends State<RequireEdit>
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddRequire()));
+                                      builder: (context) => EditRequirements(
+                                          documentId: documentId)));
                             },
                           ),
                         ),

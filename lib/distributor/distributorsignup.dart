@@ -22,7 +22,33 @@ class _DistributorSignupState extends State<DistributorSignup> {
     String location,
     String email,
     String password,
+    BuildContext context,
   ) async {
+    // Input validations
+    if (name.isEmpty || location.isEmpty || email.isEmpty || password.isEmpty) {
+      // Display a snackbar with an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('All fields must be filled.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if the email is a valid Gmail address
+    RegExp gmailRegex = RegExp(r'^[a-zA-Z0-9_.+-]+@gmail\.com$');
+    if (!gmailRegex.hasMatch(email)) {
+      // Display a snackbar with an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a valid Gmail address.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     try {
       // Register the user with Firebase Authentication
       UserCredential userCredential =
@@ -42,7 +68,7 @@ class _DistributorSignupState extends State<DistributorSignup> {
         // Additional distributor information...
       });
 
-      // Navigate to the home screen after successful registration.
+      // Navigate to the distributor login screen after successful registration.
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -50,7 +76,13 @@ class _DistributorSignupState extends State<DistributorSignup> {
         ),
       );
     } catch (e) {
-      print('Error registering distributor: $e');
+      // Display a snackbar with an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error registering distributor: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
       // Handle registration errors here.
     }
   }
@@ -193,6 +225,7 @@ class _DistributorSignupState extends State<DistributorSignup> {
                                 _locationController.text,
                                 _emailController.text,
                                 _passwordController.text,
+                                context,
                               );
                             },
                             child: Container(

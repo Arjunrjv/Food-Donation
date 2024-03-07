@@ -1,10 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/welcome.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DonorLogout extends StatelessWidget {
-  const DonorLogout({super.key});
+class DonorLogout extends StatefulWidget {
+  DonorLogout({super.key});
+
+  @override
+  State<DonorLogout> createState() => _DonorLogoutState();
+}
+
+class _DonorLogoutState extends State<DonorLogout> {
+  User? user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
 
   void _signOut(BuildContext context) async {
     showDialog(
@@ -63,6 +76,39 @@ class DonorLogout extends StatelessWidget {
     );
   }
 
+  String? userName;
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('donors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      print('Error fetching user name: $e');
+    }
+  }
+
+  Future<List<DocumentSnapshot>> fetchDonations() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('donations')
+          .doc(user?.uid ?? '')
+          .collection('userdonations')
+          .orderBy('timestamp', descending: true)
+          .get();
+      return querySnapshot.docs;
+    } catch (e) {
+      print('Error fetching donations: $e');
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +129,7 @@ class DonorLogout extends StatelessWidget {
         ),
         elevation: 0,
         title: Text(
-          'Fooddon Donor',
+          'Hi ${userName ?? ''}',
           style: GoogleFonts.barlowSemiCondensed(
             color: const Color(0xffCDFF01),
             fontSize: 27,

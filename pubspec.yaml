@@ -42,6 +42,10 @@ dependencies:
   image_picker: ^1.0.7
   intl: ^0.19.0
   provider: ^6.1.1
+  upi_india: ^3.0.1
+  easy_upi_payment: ^0.1.6
+  logger: ^2.1.0
+  
 
 dev_dependencies:
   flutter_test:

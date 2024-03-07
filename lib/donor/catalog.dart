@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'home.dart';
 
 class Catalog extends StatefulWidget {
-  const Catalog({Key? key}) : super(key: key);
+  final String distributorName;
+
+  const Catalog({Key? key, required this.distributorName}) : super(key: key);
 
   @override
   State<Catalog> createState() => _CatalogState();
@@ -14,6 +17,7 @@ class Catalog extends StatefulWidget {
 
 class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
   User? user = FirebaseAuth.instance.currentUser;
+  String? userName;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   late TabController _tabController;
   final CollectionReference item =
@@ -27,6 +31,8 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
   final TextEditingController _donorNumberController = TextEditingController();
 
   String _searchLocation = "";
+
+  String? distributorName;
 
   // Function to show the bottom sheet
   void _showContributionBottomSheet(
@@ -236,11 +242,31 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
     );
   }
 
+  var logger = Logger();
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('donors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      logger.e('Error fetching user name: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
+    fetchUserName();
+    distributorName = widget.distributorName;
   }
 
   void _handleTabSelection() {
@@ -270,7 +296,7 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
           ),
           elevation: 0,
           title: Text(
-            'Fooddon Donor',
+            'Hi ${userName ?? ''} (Donor)',
             style: GoogleFonts.barlowSemiCondensed(
               color: const Color(0xffCDFF01),
               fontSize: 27,
@@ -313,6 +339,11 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                 },
               ),
               const SizedBox(height: 10),
+              Text(
+                'Distributor: $distributorName',
+                style: GoogleFonts.barlowSemiCondensed(color: Colors.white),
+              ),
+              const SizedBox(height: 10),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
@@ -348,8 +379,11 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
             data['id'] = e.id; // Add the document ID to the data
             return data;
           }).toList();
-
           items = items.where((item) => item['name'] == itemName).toList();
+          // Filter items based on the distributor name
+          items = items.where((item) {
+            return item['distributorName'] == widget.distributorName;
+          }).toList();
 
           // Filter items based on the search location
           items = items.where((item) {

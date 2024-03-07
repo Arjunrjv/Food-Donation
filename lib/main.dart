@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Fooddon',
       theme: ThemeData(
         primaryColor: const Color(0xffCDFF01),
         colorScheme: ColorScheme.fromSeed(

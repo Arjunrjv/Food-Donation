@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const MainHome(),
     const MyDonation(),
-    const DonorLogout(),
+    DonorLogout(),
   ];
 
   @override

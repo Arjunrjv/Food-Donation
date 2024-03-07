@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/distributor/distributorhome.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,9 @@ class _AddRequireState extends State<AddRequire> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerQuantity = TextEditingController();
   final TextEditingController _controllerLocation = TextEditingController();
+  final TextEditingController _controllerDistributorName =
+      TextEditingController(); // New text controller
+  User? user = FirebaseAuth.instance.currentUser;
 
   GlobalKey<FormState> key = GlobalKey();
 
@@ -24,6 +28,8 @@ class _AddRequireState extends State<AddRequire> {
 
   late DateTime startDate = DateTime.now();
   late DateTime endDate = DateTime.now();
+
+  late Future<String?> distributorNameFuture;
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     DateTime? pickedDate = await showDatePicker(
@@ -46,21 +52,64 @@ class _AddRequireState extends State<AddRequire> {
     }
   }
 
+  // Fetch distributor name and set it to the controller
+  void _fetchDistributorName() async {
+    String? distributorName = await _getDistributorName();
+    if (distributorName != null) {
+      _controllerDistributorName.text = distributorName;
+    }
+  }
+
+  Future<String?> _getDistributorName() async {
+    try {
+      String userId = user!.uid;
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('distributors')
+          .doc(userId)
+          .get();
+      if (snapshot.exists) {
+        return snapshot['name'] as String?;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching distributor name: $e');
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDistributorName();
+    distributorNameFuture = _getDistributorName();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        title: Text(
-          'Fooddon Distributor',
-          style: GoogleFonts.barlowSemiCondensed(
-            color: const Color(0xffCDFF01),
-            fontSize: 27,
-            fontWeight: FontWeight.bold,
-          ),
+        title: FutureBuilder<String?>(
+          future: distributorNameFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text('Loading...');
+            } else if (snapshot.hasError || snapshot.data == null) {
+              return const Text('Distributor');
+            } else {
+              return Text(
+                'Hi ${snapshot.data!} (Distributor)',
+                style: GoogleFonts.barlowSemiCondensed(
+                  color: const Color(0xffCDFF01),
+                  fontSize: 27,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }
+          },
         ),
-        // toolbarHeight: 20,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -95,9 +144,7 @@ class _AddRequireState extends State<AddRequire> {
                       labelStyle: GoogleFonts.barlowSemiCondensed(
                           color: const Color(0xffCDFF01)),
                       hintStyle: GoogleFonts.barlowSemiCondensed(
-                          color: Colors.white,
-                          fontWeight:
-                              FontWeight.w500), // Adjust opacity as needed
+                          color: Colors.white, fontWeight: FontWeight.w500),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
@@ -122,9 +169,7 @@ class _AddRequireState extends State<AddRequire> {
                     labelStyle: GoogleFonts.barlowSemiCondensed(
                         color: const Color(0xffCDFF01)),
                     hintStyle: GoogleFonts.barlowSemiCondensed(
-                        color: Colors.white,
-                        fontWeight:
-                            FontWeight.w500), // Adjust opacity as needed
+                        color: Colors.white, fontWeight: FontWeight.w500),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
@@ -145,6 +190,30 @@ class _AddRequireState extends State<AddRequire> {
                   controller: _controllerLocation,
                   decoration: InputDecoration(
                     labelText: "Location",
+                    labelStyle: GoogleFonts.barlowSemiCondensed(
+                        color: const Color(0xffCDFF01)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(0.25)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xffCDFF01)),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // New TextFormField for distributor name
+                TextFormField(
+                  enabled: false,
+                  style: GoogleFonts.barlowSemiCondensed(
+                      color: const Color(0xffCDFF01)),
+                  controller: _controllerDistributorName,
+                  decoration: InputDecoration(
+                    labelText: "Distributor Name",
                     labelStyle: GoogleFonts.barlowSemiCondensed(
                         color: const Color(0xffCDFF01)),
                     enabledBorder: OutlineInputBorder(
@@ -207,6 +276,8 @@ class _AddRequireState extends State<AddRequire> {
                           String itemName = _controllerName.text;
                           String itemQuantity = _controllerQuantity.text;
                           String itemLocation = _controllerLocation.text;
+                          String distributorName = _controllerDistributorName
+                              .text; // Get distributor name
 
                           // Calculate the dates between startDate and endDate
                           List<String> datesBetween = [];
@@ -218,19 +289,15 @@ class _AddRequireState extends State<AddRequire> {
                             String formattedDate =
                                 DateFormat('yyyy-MM-dd').format(dateToAdd);
 
-                            // Add the document to the "dates" collection
-                            // await dates.doc(formattedDate).set({
-                            //   'name': itemName,
-                            //   'quantity': itemQuantity,
-                            //   'location': itemLocation,
-                            //   'timestamp': FieldValue.serverTimestamp(),
-                            // });
+                            // Add the document to the "required" collection with distributor name
                             await required.add({
                               'name': itemName,
                               'quantity': itemQuantity,
                               'location': itemLocation,
                               'dates': formattedDate,
                               'timestamp': FieldValue.serverTimestamp(),
+                              'distributorName':
+                                  distributorName, // Add distributor name to the document
                             });
 
                             datesBetween.add(formattedDate);

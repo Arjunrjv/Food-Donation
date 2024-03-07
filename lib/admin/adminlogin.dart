@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fooddon/donor/home.dart';
+import 'package:fooddon/admin/adminhome.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AdminLogIn extends StatelessWidget {
@@ -16,15 +16,15 @@ class AdminLogIn extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const AdminHome(),
         ),
       );
     } else {
       // Display error message using a SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Admin email or password is incorrect.'),
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
     }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fooddon/distributor/addrequire.dart';
@@ -14,6 +15,31 @@ class DistributorHome extends StatefulWidget {
 }
 
 class _DistributorHomeState extends State<DistributorHome> {
+  User? user = FirebaseAuth.instance.currentUser;
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  Future<void> fetchUserName() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('distributors')
+          .doc(user!.uid)
+          .get();
+
+      setState(() {
+        userName = userDoc['name'];
+      });
+    } catch (e) {
+      print('Error fetching user name: $e');
+    }
+  }
+
   void _signOut(BuildContext context) async {
     showDialog(
       context: context,
@@ -79,7 +105,7 @@ class _DistributorHomeState extends State<DistributorHome> {
           backgroundColor: Colors.black,
           elevation: 0,
           title: Text(
-            'Fooddon Distributor',
+            'Hi ${userName ?? ''} (Distributor)',
             style: GoogleFonts.barlowSemiCondensed(
               color: const Color(0xffCDFF01),
               fontSize: 27,

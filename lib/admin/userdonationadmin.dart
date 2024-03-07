@@ -1,20 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fooddon/admin/adminhome.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
-import 'distributorhome.dart';
+class UserDonationAdmin extends StatefulWidget {
+  const UserDonationAdmin({Key? key, required this.distributorName})
+      : super(key: key);
 
-class UserDonations extends StatefulWidget {
-  const UserDonations({Key? key}) : super(key: key);
+  final String distributorName;
 
   @override
-  State<UserDonations> createState() => _UserDonationsState();
+  State<UserDonationAdmin> createState() => _UserDonationAdminState();
 }
 
-class _UserDonationsState extends State<UserDonations> {
+class _UserDonationAdminState extends State<UserDonationAdmin> {
   User? user = FirebaseAuth.instance.currentUser;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -23,35 +25,43 @@ class _UserDonationsState extends State<UserDonations> {
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       fetchAllDonations() async {
     try {
-      // Get the user's document
-      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
-          .instance
-          .collection('donations')
-          .doc(user!.uid)
-          .get();
+      // Check if user is not null
+      if (user != null) {
+        // Get the user's document
+        DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+            .instance
+            .collection('donations')
+            .doc(user!.uid)
+            .get();
 
-      // Get the user's donations subcollection reference
-      CollectionReference<Map<String, dynamic>> userDonationsRef =
-          FirebaseFirestore.instance
-              .collection('donations')
-              .doc(user!.uid)
-              .collection('userdonations');
+        // Get the user's donations subcollection reference
+        CollectionReference<Map<String, dynamic>> userDonationAdminRef =
+            FirebaseFirestore.instance
+                .collection('donations')
+                .doc(user!.uid)
+                .collection('userdonations');
 
-      // Get all documents from the user's donations subcollection
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await userDonationsRef.get();
+        // Get all documents from the user's donations subcollection
+        QuerySnapshot<Map<String, dynamic>> querySnapshot =
+            await userDonationAdminRef.get();
 
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
-          querySnapshot.docs;
+        List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+            querySnapshot.docs;
 
-      logger.i('Number of documents: ${documents.length}');
+        logger.i('Number of documents: ${documents.length}');
 
-      for (QueryDocumentSnapshot<Map<String, dynamic>> document in documents) {
-        logger.i('Document ID: ${document.id}');
-        logger.i('Document data: ${document.data()}');
+        for (QueryDocumentSnapshot<Map<String, dynamic>> document
+            in documents) {
+          logger.i('Document ID: ${document.id}');
+          logger.i('Document data: ${document.data()}');
+        }
+
+        return documents;
+      } else {
+        // Handle the case where user is null (e.g., show an error message)
+        logger.e('Error: User is null');
+        return [];
       }
-
-      return documents;
     } catch (e) {
       logger.e('Error fetching all donations: $e');
       return [];
@@ -97,14 +107,14 @@ class _UserDonationsState extends State<UserDonations> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const DistributorHome(),
+                builder: (context) => const AdminHome(),
               ),
             );
           },
         ),
         elevation: 0,
         title: Text(
-          'Hi ${userName ?? ''} (Distributor)',
+          'Hi Admin',
           style: GoogleFonts.barlowSemiCondensed(
             color: const Color(0xffCDFF01),
             fontSize: 27,

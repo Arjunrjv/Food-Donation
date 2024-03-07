@@ -11,6 +11,14 @@ class DonorLogin extends StatelessWidget {
   Future<void> _handleLogin(
       String email, String password, BuildContext context) async {
     try {
+      // Check if email and password are not empty
+      if (email.isEmpty || password.isEmpty) {
+        throw FirebaseAuthException(
+          code: 'invalid-input',
+          message: 'Please enter both email and password.',
+        );
+      }
+
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       Navigator.push(
