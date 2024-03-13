@@ -115,6 +115,7 @@ class _MyDonationState extends State<MyDonation> {
                 final timestamp = donations['timestamp'];
                 final location = donations['location'] ?? 'N/A';
                 final date = donations['date'] ?? 'N/A';
+                final distributor = donations['distributorName'] ?? 'N/A';
 
                 // Convert timestamp to DateTime object
                 DateTime dateTime = (timestamp as Timestamp).toDate();
@@ -220,7 +221,8 @@ class _MyDonationState extends State<MyDonation> {
                                       snapshot.data![index].id,
                                       snapshot.data![index]['name'],
                                       snapshot.data![index]['date'],
-                                      quantity);
+                                      quantity,
+                                      distributor);
                                 },
                                 child: const Text(
                                   'Select Another Date',
@@ -252,7 +254,10 @@ class _MyDonationState extends State<MyDonation> {
                         subtitle: Center(
                             child: Text('No. of food packets: $quantity')),
                         leading: Text(date), // Display formatted date
-                        trailing: Text(location),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [Text(location), Text(distributor)],
+                        ),
                         leadingAndTrailingTextStyle:
                             GoogleFonts.barlowSemiCondensed(
                           color: Colors.white,
@@ -281,7 +286,7 @@ class _MyDonationState extends State<MyDonation> {
   }
 
   void _selectAnotherDate(String donationId, String itemName,
-      String currentSelectedDate, int currentQuantity) {
+      String currentSelectedDate, int currentQuantity, String distributor) {
     // Fetch all documents from Firestore based on the itemName
     FirebaseFirestore.instance
         .collection('required')
@@ -290,24 +295,32 @@ class _MyDonationState extends State<MyDonation> {
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         // Extract all dates from all documents
-        List<String> allDates = [];
+        Set<String> uniqueDates = new Set<String>();
 
         querySnapshot.docs.forEach((doc) {
           var dates = doc['dates'];
           if (dates != null) {
             if (dates is String) {
-              // If it's a single string, extract the date
-              allDates.add(dates);
+              // Extract the date
+              uniqueDates.add(dates.trim());
             } else if (dates is List) {
-              // If it's a list, add each element to allDates
-              allDates.addAll(dates.cast<String>());
+              // Add each unique, trimmed element to uniqueDates
+              uniqueDates.addAll(
+                  (dates.map((date) => date.trim()) as Iterable<String>)
+                      .toSet());
             } else {
               // Handle unsupported types or missing data
               print("Unsupported data type for 'dates' field.");
             }
           }
-          allDates.sort();
         });
+
+// Convert the Set to a List if needed later
+        List<String> allUniqueDates = uniqueDates.toList();
+        allUniqueDates.sort();
+
+        // Print available dates for debugging
+        print("Available Dates: $allUniqueDates");
 
         // Show dialog with all available dates
         showDialog(
@@ -316,7 +329,7 @@ class _MyDonationState extends State<MyDonation> {
             return AlertDialog(
               title: const Text('Select Another Date'),
               content: Column(
-                children: allDates.map((date) {
+                children: allUniqueDates.map((date) {
                   return ListTile(
                     title: Text(date),
                     onTap: () {
@@ -333,11 +346,14 @@ class _MyDonationState extends State<MyDonation> {
                         FirebaseFirestore.instance
                             .collection('required')
                             .where('name', isEqualTo: itemName)
+                            .where('distributorName', isEqualTo: distributor)
                             .get()
                             .then((querySnapshot) {
                           querySnapshot.docs.forEach((doc) {
+                            print("Processing document: ${doc.id}");
                             // Update quantity for the new date and old date
-                            if (doc['dates'].contains(currentSelectedDate)) {
+                            if (doc['dates'].contains(currentSelectedDate) &&
+                                doc['distributorName'] == distributor) {
                               // Increment quantity for the old date
                               FirebaseFirestore.instance
                                   .collection('required')
@@ -345,21 +361,36 @@ class _MyDonationState extends State<MyDonation> {
                                   .update({
                                 'quantity':
                                     FieldValue.increment(currentQuantity),
+                              }).then((_) {
+                                print("Incremented quantity for old date");
+                              }).catchError((error) {
+                                print(
+                                    "Error incrementing quantity for old date: $error");
                               });
-                            } else if (doc['dates'].contains(date)) {
+                            } else if (doc['dates'].contains(date) &&
+                                doc['distributorName'] == distributor) {
                               // Decrement quantity for the new date
+                              int newQuantity =
+                                  int.parse(doc['quantity']) - currentQuantity;
+
                               FirebaseFirestore.instance
                                   .collection('required')
                                   .doc(doc.id)
                                   .update({
-                                'quantity':
-                                    FieldValue.increment(-currentQuantity),
+                                'quantity': newQuantity,
+                              }).then((_) {
+                                print("Decremented quantity for new date");
+                              }).catchError((error) {
+                                print(
+                                    "Error decrementing quantity for new date: $error");
                               });
                             }
                           });
                         }).catchError((error) {
                           print(
                               "Error fetching documents related to the item: $error");
+                          print(
+                              error); // Print the full error details for debugging
                         });
 
                         Navigator.of(context).pop(); // Close the dialog

@@ -45,7 +45,6 @@ dependencies:
   upi_india: ^3.0.1
   easy_upi_payment: ^0.1.6
   logger: ^2.1.0
-  
 
 dev_dependencies:
   flutter_test:

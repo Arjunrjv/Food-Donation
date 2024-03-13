@@ -35,9 +35,31 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
 
   String? distributorName;
 
+  Future<void> fetchUserData() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('donors')
+          .doc(user!.uid)
+          .get();
+
+      // Set the retrieved user data to the controllers
+      setState(() {
+        _donorNameController.text = userDoc['name'];
+        _donorNumberController.text = userDoc['phone'];
+      });
+    } catch (e) {
+      logger.e('Error fetching user data: $e');
+    }
+  }
+
   // Function to show the bottom sheet
   void _showContributionBottomSheet(
-      BuildContext context, Map<String, dynamic> item) {
+    BuildContext context,
+    Map<String, dynamic> item,
+    String userName,
+  ) {
+    fetchUserData();
     showModalBottomSheet(
       backgroundColor: Colors.black,
       context: context,
@@ -72,6 +94,7 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                       Padding(
                         padding: const EdgeInsets.only(top: 20, bottom: 10),
                         child: TextField(
+                          enabled: false,
                           style: GoogleFonts.barlowSemiCondensed(
                             color: Colors.white,
                           ),
@@ -94,6 +117,7 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                       Padding(
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                         child: TextField(
+                          enabled: false,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(
                                 10), // Limit to 10 characters
@@ -242,6 +266,7 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                               .collection('userdonations')
                               .add({
                             'userId': userId,
+                            'distributorName': distributorName,
                             'donorName': _donorNameController.text,
                             'donorNumber': _donorNumberController.text,
                             'name': item['name'],
@@ -549,7 +574,8 @@ class _CatalogState extends State<Catalog> with TickerProviderStateMixin {
                           trailing:
                               Text('Date: ${futureAndCurrentDates.first}'),
                           onTap: () {
-                            _showContributionBottomSheet(context, thisItem);
+                            _showContributionBottomSheet(
+                                context, thisItem, userName!);
                           },
                         ),
                       ),
@@ -614,14 +640,7 @@ void _showNoDistributorsDialog(BuildContext context) {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              // // Navigate to the charity contribution page
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => CharityContributionPage(),
-              //   ),
-              // );
+              Navigator.of(context).pop();
             },
             child: Text(
               'Ok',

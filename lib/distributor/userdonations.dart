@@ -23,23 +23,18 @@ class _UserDonationsState extends State<UserDonations> {
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       fetchAllDonations() async {
     try {
-      // Get the user's document
-      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
-          .instance
-          .collection('donations')
-          .doc(user!.uid)
-          .get();
+      // Ensure userName is not null before proceeding with the query
+      if (userName == null) {
+        logger.e('Error: userName is null.');
+        return [];
+      }
 
-      // Get the user's donations subcollection reference
-      CollectionReference<Map<String, dynamic>> userDonationsRef =
-          FirebaseFirestore.instance
-              .collection('donations')
-              .doc(user!.uid)
-              .collection('userdonations');
-
-      // Get all documents from the user's donations subcollection
+      // Use collection group query to get documents from all subcollections named 'userdonations'
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await userDonationsRef.get();
+          await FirebaseFirestore.instance
+              .collectionGroup('userdonations')
+              .where('distributorName', isEqualTo: userName)
+              .get();
 
       List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
           querySnapshot.docs;

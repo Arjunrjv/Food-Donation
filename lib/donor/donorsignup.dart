@@ -14,12 +14,14 @@ class DonorSignup extends StatefulWidget {
 class _DonorSignupState extends State<DonorSignup> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _registerDonor(
     String name,
     String location,
+    String phone,
     String email,
     String password,
     BuildContext context,
@@ -87,6 +89,7 @@ class _DonorSignupState extends State<DonorSignup> {
           .set({
         'name': name,
         'location': location,
+        'phone': phone,
         'email': email,
         // Additional donor information...
       });
@@ -191,6 +194,32 @@ class _DonorSignupState extends State<DonorSignup> {
                               ),
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 30),
+                            child: SizedBox(
+                              height: 56,
+                              child: TextField(
+                                keyboardType: TextInputType.phone,
+                                controller: _phoneController,
+                                style: GoogleFonts.barlowSemiCondensed(
+                                    color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText: 'Phone',
+                                  hintStyle: GoogleFonts.barlowSemiCondensed(
+                                      color: const Color(0xffCDFF01),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w300),
+                                  suffixIcon:
+                                      Image.asset('assets/phoneicon.png'),
+                                  border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             height: 56,
                             child: TextField(
@@ -246,6 +275,7 @@ class _DonorSignupState extends State<DonorSignup> {
                                 // Get values from text fields
                                 _nameController.text,
                                 _locationController.text,
+                                _phoneController.text,
                                 _emailController.text,
                                 _passwordController.text,
                                 context,

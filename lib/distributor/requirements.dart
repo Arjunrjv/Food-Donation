@@ -154,7 +154,11 @@ class _RequireEditState extends State<RequireEdit>
             return data;
           }).toList();
 
-          items = items.where((item) => item['name'] == itemName).toList();
+          items = items
+              .where((item) =>
+                  item['name'] == itemName &&
+                  item['distributorName'] == userName)
+              .toList();
 
           // Filter items based on the search location
           items = items.where((item) {
